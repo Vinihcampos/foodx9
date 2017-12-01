@@ -9,10 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 import pso.secondphase.foodx9.R;
+import pso.secondphase.foodx9.client.TCPconnection;
+import pso.secondphase.foodx9.client.UDPconnection;
 import pso.secondphase.foodx9.model.Food;
+
+import static pso.secondphase.foodx9.activity.MenuActivity.TABLEQR;
 
 /**
  * Created by vinihcampos on 01/12/17.
@@ -29,7 +34,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.gridview, parent, false);
+        View view = mInflater.inflate(R.layout.gridview_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -61,7 +66,12 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             foodRequest.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mInflater.getContext(), foodTitle.getText(), Toast.LENGTH_SHORT).show();
+                try {
+                    UDPconnection.sendMsg(foodTitle.getText() + ";" + TABLEQR);
+                    Toast.makeText(mInflater.getContext(), foodTitle.getText() + " ordered", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 }
             });
         }

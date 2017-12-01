@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pso.secondphase.foodx9.R;
@@ -43,7 +42,7 @@ public class GridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View gridViewAndroid = inflater.inflate(R.layout.gridview, null);
+        View gridViewAndroid = inflater.inflate(R.layout.gridview_item, null);
 
         TextView price = (TextView) gridViewAndroid.findViewById(R.id.price_end);
         TextView priceCents = (TextView) gridViewAndroid.findViewById(R.id.price_end_cents);

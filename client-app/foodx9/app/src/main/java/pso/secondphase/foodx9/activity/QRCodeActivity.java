@@ -1,14 +1,19 @@
 package pso.secondphase.foodx9.activity;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import pso.secondphase.foodx9.R;
+import pso.secondphase.foodx9.util.SetSocketTask;
 
 public class QRCodeActivity extends Activity {
 
@@ -44,6 +49,7 @@ public class QRCodeActivity extends Activity {
                     String table = result.getContents().toString();
                     Intent newIntent = new Intent(this, MenuActivity.class);
                     newIntent.putExtra("TABLE", table);
+                    new SetSocketTask().execute("5220", "192.168.0.120");
                     startActivityForResult(newIntent, 99);
 
                 }

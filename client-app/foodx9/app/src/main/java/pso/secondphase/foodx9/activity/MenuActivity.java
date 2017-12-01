@@ -1,30 +1,43 @@
 package pso.secondphase.foodx9.activity;
 
+import android.Manifest;
 import android.app.Activity;
 
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.StrictMode;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pso.secondphase.foodx9.R;
-import pso.secondphase.foodx9.adapter.CustomRecyclerViewAdapter;
 import pso.secondphase.foodx9.fragment.NavigationDrawerFragment;
+import pso.secondphase.foodx9.fragment.Pager;
 import pso.secondphase.foodx9.model.Food;
 
-public class MenuActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MenuActivity extends AppCompatActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        TabLayout.OnTabSelectedListener {
+
+    private Context context;
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -39,14 +52,28 @@ public class MenuActivity extends Activity
 
     private ImageView menuIcon;
 
-    private List<Food> foods;
-    private CustomRecyclerViewAdapter viewAdapter;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
+    public static String TABLEQR = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getApplicationContext();
+        requestPermission();
+
+        if (android.os.Build.VERSION.SDK_INT > 9){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         setContentView(R.layout.activity_menu);
-        getActionBar().hide();
+        getSupportActionBar().hide();
+
+        Intent i = getIntent();
+        TABLEQR = i.getStringExtra("TABLE");
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -66,12 +93,49 @@ public class MenuActivity extends Activity
             }
         });
 
-        foods = populateFoods();
-        RecyclerView rv = (RecyclerView) findViewById(R.id.recyler_view);
-        int numberOfColumns = 2;
-        rv.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        viewAdapter = new CustomRecyclerViewAdapter(this, foods);
-        rv.setAdapter(viewAdapter);
+        //Initializing the tablayout
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+
+        //Adding the tabs using addTab() method
+        tabLayout.addTab(tabLayout.newTab().setText("Meals"));
+        tabLayout.addTab(tabLayout.newTab().setText("Drinks"));
+        tabLayout.addTab(tabLayout.newTab().setText("Desserts"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        //Initializing viewPager
+        viewPager = (ViewPager) findViewById(R.id.pager);
+
+        //Creating our pager adapter
+        Pager adapter = new Pager(getSupportFragmentManager(), tabLayout.getTabCount());
+
+        //Adding adapter to pager
+        viewPager.setAdapter(adapter);
+        tabLayout.setOnTabSelectedListener(this);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void requestPermission(){
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.INTERNET)) {
+                Toast.makeText(context,"Camera permission",Toast.LENGTH_LONG).show();
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.INTERNET},
+                        PERMISSION_REQUEST_CODE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+
+        }
     }
 
     @Override
@@ -162,6 +226,19 @@ public class MenuActivity extends Activity
 
         return newFoods;
 
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        viewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
     }
 
     /**
