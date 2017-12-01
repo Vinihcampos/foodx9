@@ -1,11 +1,8 @@
 package pso.secondphase.foodx9.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,24 +23,24 @@ import pso.secondphase.iox9.configuration.ApplicationConfiguration;
  *
  * @author vitorgreati
  */
-public class IncomingOrdersThread extends Thread {
+public class OutcomingOrdersThread extends Thread {
     
-    private volatile Queue<String> incomingOrdersQueue;
+    private volatile Queue<String> outcomingOrdersQueue;
     
     private DatagramSocket socketServer;
     
     private volatile boolean active;
     
-    private static IncomingOrdersThread instance;
+    private static OutcomingOrdersThread instance;
     
-    public static IncomingOrdersThread getInstance() {
+    public static OutcomingOrdersThread getInstance() {
         if (instance == null)
-            instance = new IncomingOrdersThread();
+            instance = new OutcomingOrdersThread();
         return instance;
     }
     
-    private IncomingOrdersThread() {
-        incomingOrdersQueue = new LinkedList<>();
+    private OutcomingOrdersThread() {
+        outcomingOrdersQueue = new LinkedList<>();
     }
     
     @Override
@@ -55,7 +52,7 @@ public class IncomingOrdersThread extends Thread {
             
             try {
                 if (socketServer != null && !socketServer.isClosed()) {
-                    System.out.println("Waiting for an incoming order...");
+                    System.out.println("Waiting for an outcoming order...");
                     
                     byte[] msg = new byte[256];
                     
@@ -64,17 +61,17 @@ public class IncomingOrdersThread extends Thread {
                     socketServer.receive(pkg);
 
                     String message = new String(pkg.getData());
-                    System.out.println("An order has come: " + message);
-                    getIncomingOrdersQueue().add(message);
+                    System.out.println("An order has finished: " + message);
+                    getOutcomingOrdersQueue().add(message);
                 } else {
                     socketServer = new DatagramSocket(null);
                     InetSocketAddress ia = new InetSocketAddress(
                             (String) ApplicationConfiguration.getInstance().getParameters().get("server_ip"),
-                            (Integer) ApplicationConfiguration.getInstance().getParameters().get("server_port_in"));
+                            (Integer) ApplicationConfiguration.getInstance().getParameters().get("server_port_out"));
                     socketServer.bind(ia);
                 }  
             }catch (IOException ex) {
-                Logger.getLogger(IncomingOrdersThread.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(OutcomingOrdersThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -94,17 +91,17 @@ public class IncomingOrdersThread extends Thread {
     }
 
     /**
-     * @return the incomingOrdersQueue
+     * @return the outcomingOrdersQueue
      */
-    public synchronized Queue<String> getIncomingOrdersQueue() {
-        return incomingOrdersQueue;
+    public synchronized Queue<String> getOutcomingOrdersQueue() {
+        return outcomingOrdersQueue;
     }
 
     /**
-     * @param incomingOrdersQueue the incomingOrdersQueue to set
+     * @param outcomingOrdersQueue the outcomingOrdersQueue to set
      */
-    public synchronized void setIncomingOrdersQueue(Queue<String> incomingOrdersQueue) {
-        this.incomingOrdersQueue = incomingOrdersQueue;
+    public synchronized void setOutcomingOrdersQueue(Queue<String> outcomingOrdersQueue) {
+        this.outcomingOrdersQueue = outcomingOrdersQueue;
     }
     
 

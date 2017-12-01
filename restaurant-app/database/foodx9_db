@@ -2,7 +2,10 @@
 
 CREATE TABLE entity (
 	identifier VARCHAR(50) PRIMARY KEY,
-	registration_date DATE NOT NULL
+	registration_date DATE NOT NULL,
+	nome VARCHAR(100),
+	descricao VARCHAR(255),
+	preco DECIMAL
 );
 
 CREATE TABLE io_record (

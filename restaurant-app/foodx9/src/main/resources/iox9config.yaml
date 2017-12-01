@@ -14,8 +14,12 @@
 capacity: 30 
 almost_full: 25
 
-server_ip: "192.168.0.120"
-server_port: 5220
+# Extra parameters
+extra:
+    server_ip: "192.168.0.120"
+    server_port_in: 5220
+    server_port_out: 5221
+
 
 # Database configuration
 database:
@@ -36,7 +40,7 @@ model_factory_class: "pso.secondphase.iox9.model.GeneralModelFactory"
 sources:
     - 
         id: food_in_thread
-        source_class: "pso.secondphase.foodx9.processing.QueueDataSource"
+        source_class: "pso.secondphase.foodx9.processing.QueueIncomingDataSource"
         processor_class: "pso.secondphase.foodx9.processing.FoodInProcessor"
         recognizer_class: "pso.secondphase.foodx9.processing.FoodNumberRecognizer"
         io_type: 0
@@ -44,7 +48,7 @@ sources:
         sleep_time: 1000
     - 
         id: food_out_thread
-        source_class: "pso.secondphase.foodx9.processing.QueueDataSource"
+        source_class: "pso.secondphase.foodx9.processing.QueueOutcomingDataSource"
         processor_class: "pso.secondphase.foodx9.processing.FoodOutProcessor"
         recognizer_class: "pso.secondphase.foodx9.processing.FoodNumberRecognizer"
         io_type: 1
@@ -66,16 +70,18 @@ notification_agents:
 # Views registration
 views:
     -
-        id: entrance_panel
-        class: "pso.secondphase.workersx9.view.PanelIn"
+        id: in_food_panel
+        class: "pso.secondphase.foodx9.view.FoodPanelIn"
         notifiable: false
         processors_of_interest:
-            - entrance_camera
+            - food_in_thread
             
     -
-        id: exit_panel
-        class: "pso.secondphase.workersx9.view.PanelOut"
+        id: out_food_panel
+        class: "pso.secondphase.foodx9.view.FoodPanelOut"
         notifiable: false
         processors_of_interest:
-            - exit_camera
+            - food_out_thread
             
+# Start view
+start_class: "pso.secondphase.foodx9.view.MainView"
