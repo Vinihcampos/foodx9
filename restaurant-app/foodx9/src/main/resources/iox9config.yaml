@@ -1,0 +1,87 @@
+####### iox9 config file #############################
+# Use this file to configure the framework. 
+# Essentially:                    
+# 
+# - Define general preferences.
+# - Register your data sources (cameras, for example).
+# - Register your statistical processors.
+# - Register your views and tell them how to interact
+#   with sources and statistical processors.
+# - Register your notification agents.
+######################################################
+
+# General preferences
+capacity: 30 
+almost_full: 25
+
+# Extra parameters
+extra:
+    server_ip: "192.168.0.120"
+    server_port_in: 5220
+    server_port_out: 5221
+
+
+# Database configuration
+database:
+    url: "jdbc:postgresql://localhost:5432/foodx9db"
+    username: "foodx9"
+    password: "123"
+
+# Important concrete classes
+entity_dao_class: "pso.secondphase.iox9.dao.JDBCEntityDAO"
+iorecord_dao_class: "pso.secondphase.iox9.dao.JDBCIORecordDAO"
+model_factory_class: "pso.secondphase.iox9.model.GeneralModelFactory"
+
+# Collector configuration
+# collector:
+#    class: "pso.secondphase.workersx9.processing.DBCollector"
+#    sleep_time: 500
+
+sources:
+    - 
+        id: food_in_thread
+        source_class: "pso.secondphase.foodx9.processing.QueueIncomingDataSource"
+        processor_class: "pso.secondphase.foodx9.processing.FoodInProcessor"
+        recognizer_class: "pso.secondphase.foodx9.processing.FoodNumberRecognizer"
+        io_type: 0
+        active: true
+        sleep_time: 1000
+    - 
+        id: food_out_thread
+        source_class: "pso.secondphase.foodx9.processing.QueueOutcomingDataSource"
+        processor_class: "pso.secondphase.foodx9.processing.FoodOutProcessor"
+        recognizer_class: "pso.secondphase.foodx9.processing.FoodNumberRecognizer"
+        io_type: 1
+        active: true
+        sleep_time: 1000
+        
+# Statistics processors registration
+statictics_processors:
+    -
+        id: count_by_hours_in_day
+        class: "pso.secondphase.iox9.business.statistics.CountByHoursInDayStatistics"
+    
+# Notifiers registration
+notification_agents:
+    -
+        id: max_capacity_notification
+        class: "pso.secondphase.foodx9.notification.MaxCapacityNotificationAgent"
+        
+# Views registration
+views:
+    -
+        id: in_food_panel
+        class: "pso.secondphase.foodx9.view.FoodPanelIn"
+        notifiable: false
+        processors_of_interest:
+            - food_in_thread
+            
+    -
+        id: out_food_panel
+        class: "pso.secondphase.foodx9.view.FoodPanelOut"
+        notifiable: false
+        processors_of_interest:
+            - food_out_thread
+            
+# Start view
+start_class: "pso.secondphase.foodx9.view.MainView"
