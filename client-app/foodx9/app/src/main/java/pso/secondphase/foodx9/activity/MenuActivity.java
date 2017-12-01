@@ -5,23 +5,21 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pso.secondphase.foodx9.R;
-import pso.secondphase.foodx9.adapter.GridViewAdapter;
+import pso.secondphase.foodx9.adapter.CustomRecyclerViewAdapter;
 import pso.secondphase.foodx9.fragment.NavigationDrawerFragment;
 import pso.secondphase.foodx9.model.Food;
 
@@ -42,8 +40,7 @@ public class MenuActivity extends Activity
     private ImageView menuIcon;
 
     private List<Food> foods;
-    private GridView gridView;
-    private GridViewAdapter gvAdapter;
+    private CustomRecyclerViewAdapter viewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +67,11 @@ public class MenuActivity extends Activity
         });
 
         foods = populateFoods();
-        gvAdapter = new GridViewAdapter(MenuActivity.this, foods);
-        gridView = (GridView) findViewById(R.id.gridview);
-        gridView.setAdapter(gvAdapter);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.recyler_view);
+        int numberOfColumns = 2;
+        rv.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        viewAdapter = new CustomRecyclerViewAdapter(this, foods);
+        rv.setAdapter(viewAdapter);
     }
 
     @Override
@@ -108,8 +107,6 @@ public class MenuActivity extends Activity
     private List<Food> populateFoods(){
 
         List<Food> newFoods = new ArrayList<>();
-
-        ImageView temp = null;
 
         newFoods.add(new Food("aubergine", "", 99.99, R.drawable.aubergine));
         newFoods.add(new Food("beer", "", 99.99, R.drawable.beer));
