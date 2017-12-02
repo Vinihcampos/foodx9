@@ -51,13 +51,13 @@ public class OutcomingOrdersThread extends Thread {
         
         while (isActive()) {
             
-            if(!InMemoryFoodDatabase.getInsideFoods().isEmpty()){
+            /*if(!InMemoryFoodDatabase.getInsideFoods().isEmpty()){
                 int pos = (int)(Math.random() * InMemoryFoodDatabase.getInsideFoods().size());
                 getOutcomingOrdersQueue().add(InMemoryFoodDatabase.getInsideFoods().get(pos));
                 InMemoryFoodDatabase.getInsideFoods().remove(pos);
-            }
+            }*/
             
-            /*try {
+            try {
                 if (socketServer != null && !socketServer.isClosed()) {
                     System.out.println("Waiting for an outcoming order...");
                     
@@ -79,7 +79,7 @@ public class OutcomingOrdersThread extends Thread {
                 }  
             }catch (IOException ex) {
                 Logger.getLogger(OutcomingOrdersThread.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            }
         }
     }
     

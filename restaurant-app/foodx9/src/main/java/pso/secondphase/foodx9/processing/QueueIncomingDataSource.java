@@ -24,7 +24,7 @@ public class QueueIncomingDataSource extends IdentityDataSource<String>{
     @Override
     protected String _getData() throws InvalidDataReceivedException {
         if (!IncomingOrdersThread.getInstance().getIncomingOrdersQueue().isEmpty()){
-            InMemoryFoodDatabase.getInsideFoods().add(IncomingOrdersThread.getInstance().getIncomingOrdersQueue().peek());
+            //InMemoryFoodDatabase.getInsideFoods().add(IncomingOrdersThread.getInstance().getIncomingOrdersQueue().peek());
             return IncomingOrdersThread.getInstance().getIncomingOrdersQueue().remove();
         }
         return null;
