@@ -45,41 +45,46 @@ public class OutcomingOrdersThread extends Thread {
     }
     
     @Override
-    public void run() {
+    public synchronized void run() {
         
         this.setActive(true);
         
-        while (isActive()) {
-            
-            /*if(!InMemoryFoodDatabase.getInsideFoods().isEmpty()){
-                int pos = (int)(Math.random() * InMemoryFoodDatabase.getInsideFoods().size());
-                getOutcomingOrdersQueue().add(InMemoryFoodDatabase.getInsideFoods().get(pos));
-                InMemoryFoodDatabase.getInsideFoods().remove(pos);
-            }*/
+        while (isActive()) {        
             
             try {
-                if (socketServer != null && !socketServer.isClosed()) {
-                    System.out.println("Waiting for an outcoming order...");
-                    
-                    byte[] msg = new byte[256];
-                    
-                    DatagramPacket pkg = new DatagramPacket(msg, msg.length);
-                    
-                    socketServer.receive(pkg);
-
-                    String message = new String(pkg.getData());
-                    System.out.println("An order has finished: " + message);
-                    getOutcomingOrdersQueue().add(message);
-                } else {
-                    socketServer = new DatagramSocket(null);
-                    InetSocketAddress ia = new InetSocketAddress(
-                            (String) ApplicationConfiguration.getInstance().getParameters().get("server_ip"),
-                            (Integer) ApplicationConfiguration.getInstance().getParameters().get("server_port_out"));
-                    socketServer.bind(ia);
-                }  
-            }catch (IOException ex) {
+                if(!InMemoryFoodDatabase.getInsideFoods().isEmpty()){
+                    int pos = (int)(Math.random() * InMemoryFoodDatabase.getInsideFoods().size());
+                    getOutcomingOrdersQueue().add(InMemoryFoodDatabase.getInsideFoods().get(pos));
+                    InMemoryFoodDatabase.getInsideFoods().remove(pos);
+                }
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
                 Logger.getLogger(OutcomingOrdersThread.class.getName()).log(Level.SEVERE, null, ex);
             }
+                
+                /*try {
+                if (socketServer != null && !socketServer.isClosed()) {
+                System.out.println("Waiting for an outcoming order...");
+                
+                byte[] msg = new byte[256];
+                
+                DatagramPacket pkg = new DatagramPacket(msg, msg.length);
+                
+                socketServer.receive(pkg);
+                
+                String message = new String(pkg.getData());
+                System.out.println("An order has finished: " + message);
+                getOutcomingOrdersQueue().add(message);
+                } else {
+                socketServer = new DatagramSocket(null);
+                InetSocketAddress ia = new InetSocketAddress(
+                (String) ApplicationConfiguration.getInstance().getParameters().get("server_ip"),
+                (Integer) ApplicationConfiguration.getInstance().getParameters().get("server_port_out"));
+                socketServer.bind(ia);
+                }
+                }catch (IOException ex) {
+                Logger.getLogger(OutcomingOrdersThread.class.getName()).log(Level.SEVERE, null, ex);
+                }*/
         }
     }
     

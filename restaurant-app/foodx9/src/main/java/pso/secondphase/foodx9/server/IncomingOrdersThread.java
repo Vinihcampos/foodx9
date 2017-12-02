@@ -47,7 +47,7 @@ public class IncomingOrdersThread extends Thread {
     }
     
     @Override
-    public void run() {
+    public synchronized void run() {
         
         this.setActive(true);
         
