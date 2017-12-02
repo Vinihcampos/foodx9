@@ -11,6 +11,7 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import pso.secondphase.foodx9.util.InMemoryFoodDatabase;
 import pso.secondphase.iox9.configuration.ApplicationConfiguration;
 
 /*
@@ -50,7 +51,13 @@ public class OutcomingOrdersThread extends Thread {
         
         while (isActive()) {
             
-            try {
+            if(!InMemoryFoodDatabase.getInsideFoods().isEmpty()){
+                int pos = (int)(Math.random() * InMemoryFoodDatabase.getInsideFoods().size());
+                getOutcomingOrdersQueue().add(InMemoryFoodDatabase.getInsideFoods().get(pos));
+                InMemoryFoodDatabase.getInsideFoods().remove(pos);
+            }
+            
+            /*try {
                 if (socketServer != null && !socketServer.isClosed()) {
                     System.out.println("Waiting for an outcoming order...");
                     
@@ -72,7 +79,7 @@ public class OutcomingOrdersThread extends Thread {
                 }  
             }catch (IOException ex) {
                 Logger.getLogger(OutcomingOrdersThread.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }*/
         }
     }
     

@@ -6,6 +6,7 @@
 package pso.secondphase.foodx9.processing;
 
 import pso.secondphase.foodx9.server.IncomingOrdersThread;
+import pso.secondphase.foodx9.util.InMemoryFoodDatabase;
 import pso.secondphase.iox9.business.capture.IdentityDataSource;
 import pso.secondphase.iox9.exception.FailedOpeningSourceException;
 import pso.secondphase.iox9.exception.InvalidDataReceivedException;
@@ -22,8 +23,9 @@ public class QueueIncomingDataSource extends IdentityDataSource<String>{
 
     @Override
     protected String _getData() throws InvalidDataReceivedException {
-        if (!IncomingOrdersThread.getInstance().getIncomingOrdersQueue().isEmpty())
-            return IncomingOrdersThread.getInstance().getIncomingOrdersQueue().remove();
+        if (!IncomingOrdersThread.getInstance().getIncomingOrdersQueue().isEmpty()){
+            InMemoryFoodDatabase.getInsideFoods().add(IncomingOrdersThread.getInstance().getIncomingOrdersQueue().remove());
+        }
         return null;
     }
 
