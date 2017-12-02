@@ -16,7 +16,7 @@ almost_full: 25
 
 # Extra parameters
 extra:
-    server_ip: "192.168.0.120"
+    server_ip: "192.168.1.7"
     server_port_in: 5220
     server_port_out: 5221
 
