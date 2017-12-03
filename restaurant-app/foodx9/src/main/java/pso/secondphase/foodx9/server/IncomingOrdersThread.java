@@ -44,10 +44,18 @@ public class IncomingOrdersThread extends Thread {
     
     private IncomingOrdersThread() {
         incomingOrdersQueue = new LinkedList<>();
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run(){
+                socketServer.close(); /* failed */
+                System.out.println("The server is shut down!");
+            }
+        });
     }
     
     @Override
-    public synchronized void run() {
+    public void run() {
         
         this.setActive(true);
         

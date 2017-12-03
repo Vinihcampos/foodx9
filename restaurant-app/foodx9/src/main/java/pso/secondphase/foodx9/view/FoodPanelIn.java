@@ -60,7 +60,7 @@ public class FoodPanelIn extends Observer {
     public void update(FoodInProcessor processor, Object o) {
         System.out.println("ENTROU");
         System.out.println(((IORecord)o).getEntity().getIdentifier());
-        System.out.println(((IORecord)o).getEntity().getAttrs().get("preco").value);
+//        System.out.println(((IORecord)o).getEntity().getAttrs().get("preco").value);
         System.out.println(((IORecord)o).getInstant());
         
         Platform.runLater(() -> {
