@@ -83,4 +83,4 @@ views:
             - food_out_thread
             
 # Start view
-start_class: "pso.secondphase.foodx9.view.MainView"
+start_class: "pso.secondphase.foodx9.view.RealTimePanel"
