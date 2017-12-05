@@ -16,10 +16,9 @@ almost_full: 25
 
 # Extra parameters
 extra:
-    server_ip: "192.168.0.120"
+    server_ip: "10.0.0.104"
     server_port_in: 5220
     server_port_out: 5221
-
 
 # Database configuration
 database:
@@ -53,10 +52,10 @@ sources:
         recognizer_class: "pso.secondphase.foodx9.processing.FoodNumberRecognizer"
         io_type: 1
         active: true
-        sleep_time: 1000
+        sleep_time: 2000
         
 # Statistics processors registration
-statictics_processors:
+statistics_processors:
     -
         id: count_by_hours_in_day
         class: "pso.secondphase.iox9.business.statistics.CountByHoursInDayStatistics"
@@ -84,4 +83,4 @@ views:
             - food_out_thread
             
 # Start view
-start_class: "pso.secondphase.foodx9.view.MainView"
+start_class: "pso.secondphase.foodx9.view.RealTimePanel"
